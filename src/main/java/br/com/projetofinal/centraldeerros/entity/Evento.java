@@ -72,4 +72,59 @@ public class Evento {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime alteradoEm;
 
+    public Level getLevel() {
+        return level;
+    }
+
+    public void setLevel(Level level) {
+        this.level = level;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public String getLog() {
+        return log;
+    }
+
+    public void setLog(String log) {
+        this.log = log;
+    }
+
+    public String getOrigem() {
+        return origem;
+    }
+
+    public void setOrigem(String origem) {
+        this.origem = origem;
+    }
+
+    public Long getQuantidade() {
+        return quantidade;
+    }
+
+    public void setQuantidade(Long quantidade) {
+        this.quantidade = quantidade;
+    }
+
+    public LocalDateTime getData() {
+        return data;
+    }
+
+    public void setData(LocalDateTime data) {
+        this.data = data;
+    }
+
+    public LocalDateTime getAlteradoEm() {
+        return alteradoEm;
+    }
+
+    public void setAlteradoEm(LocalDateTime alteradoEm) {
+        this.alteradoEm = alteradoEm;
+    }
 }
