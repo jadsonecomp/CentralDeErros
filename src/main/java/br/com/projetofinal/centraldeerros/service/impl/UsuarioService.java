@@ -1,13 +1,17 @@
 package br.com.projetofinal.centraldeerros.service.impl;
 
+import br.com.projetofinal.centraldeerros.entity.Evento;
 import br.com.projetofinal.centraldeerros.entity.Usuario;
 import br.com.projetofinal.centraldeerros.repository.UsuarioRepository;
 import br.com.projetofinal.centraldeerros.service.interfaces.UsuarioServiceInterface;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -33,6 +37,11 @@ public class UsuarioService implements UsuarioServiceInterface {
     @Override
     public Usuario findByEmail(String email) {
         return this.repository.findByEmail(email);
+    }
+
+    @Override
+    public List<Usuario> findAll(Pageable pageable) {
+        return this.repository.findAll(pageable).getContent();
     }
 
     @Override
