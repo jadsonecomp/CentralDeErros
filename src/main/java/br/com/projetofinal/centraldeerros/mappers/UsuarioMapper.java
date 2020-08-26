@@ -14,6 +14,7 @@ public interface UsuarioMapper {
     @Mappings({
         @Mapping(source = "id", target = "id"),
         @Mapping(source = "nome", target = "nome"),
+        @Mapping(source = "login", target = "login"),
         @Mapping(source = "email", target = "email"),
         @Mapping(source = "criadoEm", target = "criadoEm", dateFormat = "yyyy-MM-dd HH:mm"),
         @Mapping(source = "alteradoEm", target = "alteradoEm", dateFormat = "yyyy-MM-dd HH:mm")

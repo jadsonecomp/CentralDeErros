@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Optional;
 
-@Controller
+@RestController
 @AllArgsConstructor
 @RequestMapping("/usuarios")
 public class UsuarioController {
@@ -46,11 +46,20 @@ public class UsuarioController {
     @ApiOperation(value = "Cria uma conta de usuário")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Usuário criado com sucesso!"),
+            @ApiResponse(code = 409, message = "Dados de Login ou e-mail já cadastrados"),
             @ApiResponse(code = 500, message = "Erro interno, não foi possível completar a requisição")
     })
     @PostMapping(produces = "application/json")
     public ResponseEntity<UsuarioDTO> save(@Valid @RequestBody Usuario usuario){
         try{
+            Optional<Usuario> account = usuarioService.findByLogin(usuario.getLogin());
+            if (account.isPresent()) {
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
+            }
+            account = Optional.ofNullable(usuarioService.findByEmail(usuario.getEmail()));
+            if (account.isPresent()) {
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
+            }
             return ResponseEntity.status(HttpStatus.CREATED).body(usuarioMapper.map(usuarioService.save(usuario)));
         } catch (Exception e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

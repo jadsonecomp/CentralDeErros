@@ -5,6 +5,7 @@ import br.com.projetofinal.centraldeerros.entity.Evento;
 import br.com.projetofinal.centraldeerros.mappers.EventoMapper;
 import br.com.projetofinal.centraldeerros.rules.DataEventoRule;
 import br.com.projetofinal.centraldeerros.rules.EnumEventoRule;
+import br.com.projetofinal.centraldeerros.rules.LongEventoRule;
 import br.com.projetofinal.centraldeerros.rules.StringEventoRule;
 import br.com.projetofinal.centraldeerros.service.impl.EventoService;
 import io.swagger.annotations.ApiOperation;
@@ -49,6 +50,7 @@ public class EventoController {
                 .and(new StringEventoRule("log", log))
                 .and(new StringEventoRule("origem", origem))
                 .and(new StringEventoRule("descricao", descricao))
+                .and(new LongEventoRule("quantidade", quantidade))
                 .and(new DataEventoRule("data", data));
         return eventoMapper.map(eventoService.findAll(specifications,pageable));
 

@@ -15,6 +15,7 @@ public class UsuarioDTO {
 
     private Long id;
     private String nome;
+    private String login;
     private String email;
     private LocalDateTime criadoEm;
     private LocalDateTime alteradoEm;
