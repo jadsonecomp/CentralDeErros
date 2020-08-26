@@ -39,7 +39,7 @@ public class Usuario implements UserDetails {
     @Size(max = 100)
     private String nome;
 
-    @Column
+    @Column(unique=true)
     @NotNull
     @NotBlank(message = "Preencha seu login.")
     @Size(max = 50)
@@ -51,7 +51,7 @@ public class Usuario implements UserDetails {
     @Size(max = 255)
     private String senha;
 
-    @Column
+    @Column(unique=true)
     @Email
     @Size(max = 100)
     @NotNull

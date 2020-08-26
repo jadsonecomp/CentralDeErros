@@ -52,14 +52,6 @@ public class UsuarioController {
     @PostMapping(produces = "application/json")
     public ResponseEntity<UsuarioDTO> save(@Valid @RequestBody Usuario usuario){
         try{
-            Optional<Usuario> account = usuarioService.findByLogin(usuario.getLogin());
-            if (account.isPresent()) {
-                return new ResponseEntity<>(HttpStatus.CONFLICT);
-            }
-            account = Optional.ofNullable(usuarioService.findByEmail(usuario.getEmail()));
-            if (account.isPresent()) {
-                return new ResponseEntity<>(HttpStatus.CONFLICT);
-            }
             return ResponseEntity.status(HttpStatus.CREATED).body(usuarioMapper.map(usuarioService.save(usuario)));
         } catch (Exception e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
