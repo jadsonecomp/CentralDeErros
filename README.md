@@ -1,4 +1,23 @@
-# Central de Erros
+# **Central de Erros** 
+
+### **Projeto Final do AceleraDev Java da Codenation** 
+
+## Documentação da API desenvolvida
+https://projeto-central-erros.herokuapp.com/swagger-ui.html
+
+## Tecnologias utilizadas
+* Java - SpringBoot
+* Protocolo OAuth2 do SpingSecurity
+* Banco de dados H2
+
+## Ferramentas utilizadas
+* [Intellij](https://www.jetbrains.com/pt-br/idea/) - IDE utilizada
+* [SpringBoot](https://spring.io/projects/spring-boot) - Framework Java
+* [Swagger](https://swagger.io/) - Documentação da API desenvolvida
+* [Heroku](https://dashboard.heroku.com/) - Para deploy da aplicação
+
+==========================================================================================
+# **Descrição do projeto e requisitos da Central de Erros**
 
 ## Objetivo
 
