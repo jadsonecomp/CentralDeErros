@@ -25,10 +25,6 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @EnableResourceServer
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    //@Qualifier("inMemoryUserDetailsManager")
-//    @Autowired
-//    private UserDetailsService userService;
-
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -45,11 +41,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 "/h2/**",
                 "/webjars/**");
     }
-
-//    @Override
-//    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(this.userService).passwordEncoder(passwordEncoder());
-//    }
 
     @Autowired
     public void authenticationManager(AuthenticationManagerBuilder builder, UsuarioRepository userRepository) throws Exception {

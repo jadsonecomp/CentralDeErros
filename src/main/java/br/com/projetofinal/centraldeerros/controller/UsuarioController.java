@@ -1,5 +1,6 @@
 package br.com.projetofinal.centraldeerros.controller;
 
+import br.com.projetofinal.centraldeerros.exceptions.RecursoNaoEncontradoException;
 import br.com.projetofinal.centraldeerros.dto.UsuarioDTO;
 import br.com.projetofinal.centraldeerros.entity.Usuario;
 import br.com.projetofinal.centraldeerros.mappers.UsuarioMapper;
@@ -13,9 +14,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -69,15 +72,14 @@ public class UsuarioController {
             @ApiResponse(code = 500, message = "Erro interno, não foi possível completar a requisição")
     })
     public ResponseEntity<UsuarioDTO> findById(@PathVariable(value = "id") Long id) {
-        try {
-            Optional<Usuario> account = usuarioService.findById(id);
-            if (account.isPresent()) {
-                return new ResponseEntity<UsuarioDTO>(usuarioMapper.map(account.get()), HttpStatus.OK);
-            }
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+
+        Optional<Usuario> account = usuarioService.findById(id);
+        if (account.isPresent()) {
+            return new ResponseEntity<UsuarioDTO>(usuarioMapper.map(account.get()), HttpStatus.OK);
+        }else{
+            throw new RecursoNaoEncontradoException("Usuário de id "+ id);
         }
+
     }
 
 
@@ -91,15 +93,14 @@ public class UsuarioController {
             @ApiResponse(code = 500, message = "Erro interno, não foi possível completar a requisição")
     })
     public ResponseEntity<UsuarioDTO> findByLogin(@PathVariable(value = "login") String login) {
-        try {
-            Optional<Usuario> account = usuarioService.findByLogin(login);
-            if (account.isPresent()) {
-                return new ResponseEntity<UsuarioDTO>(usuarioMapper.map(account.get()), HttpStatus.OK);
-            }
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+
+        Optional<Usuario> account = usuarioService.findByLogin(login);
+        if (account.isPresent()) {
+            return new ResponseEntity<UsuarioDTO>(usuarioMapper.map(account.get()), HttpStatus.OK);
+        }else{
+            throw new RecursoNaoEncontradoException("Usuário de login "+ login);
         }
+
     }
 
 
@@ -113,15 +114,14 @@ public class UsuarioController {
             @ApiResponse(code = 500, message = "Erro interno, não foi possível completar a requisição")
     })
     public ResponseEntity<UsuarioDTO> findByEmail(@PathVariable(value = "email") String email) {
-        try {
-            Optional<Usuario> account = Optional.ofNullable(usuarioService.findByEmail(email));
-            if (account.isPresent()) {
-                return new ResponseEntity<UsuarioDTO>(usuarioMapper.map(account.get()), HttpStatus.OK);
-            }
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+
+        Optional<Usuario> account = Optional.ofNullable(usuarioService.findByEmail(email));
+        if (account.isPresent()) {
+            return new ResponseEntity<UsuarioDTO>(usuarioMapper.map(account.get()), HttpStatus.OK);
+        }else{
+            throw new RecursoNaoEncontradoException("Usuário de email "+ email);
         }
+
     }
 
 
@@ -135,17 +135,19 @@ public class UsuarioController {
     })
     @PutMapping(value = "/{id}", produces = "application/json", consumes = "application/json")
     public ResponseEntity<Usuario> updateUser(@Valid @RequestBody Usuario userAtualizacao, @PathVariable(value = "id") Long id) {
-        try {
+//        try {
             Optional<Usuario> user = usuarioService.findById(id);
             if (user.isPresent()) {
                 userAtualizacao.setId(user.get().getId());
                 userAtualizacao.setCriadoEm(user.get().getCriadoEm());
                 return new ResponseEntity<Usuario>(usuarioService.save(userAtualizacao), HttpStatus.OK);
+            }else{
+                throw new RecursoNaoEncontradoException("Usuário de id "+ id);
             }
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+//
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
     }
 
 }
