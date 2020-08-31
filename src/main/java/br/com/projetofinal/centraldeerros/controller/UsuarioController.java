@@ -1,5 +1,6 @@
 package br.com.projetofinal.centraldeerros.controller;
 
+import br.com.projetofinal.centraldeerros.exceptions.ErroInternoServidorException;
 import br.com.projetofinal.centraldeerros.exceptions.RecursoNaoEncontradoException;
 import br.com.projetofinal.centraldeerros.dto.UsuarioDTO;
 import br.com.projetofinal.centraldeerros.entity.Usuario;
@@ -13,12 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -42,7 +40,11 @@ public class UsuarioController {
             @ApiResponse(code = 200, message = "Usuários encontrados com sucesso")
     })
     public ResponseEntity findAll(Pageable pageable) {
-        return new ResponseEntity(usuarioMapper.map(this.usuarioService.findAll(pageable)), HttpStatus.OK);
+        try{
+            return new ResponseEntity(usuarioMapper.map(this.usuarioService.findAll(pageable)), HttpStatus.OK);
+        } catch (Exception e) {
+            throw new ErroInternoServidorException(e.getCause().getMessage());
+        }
     }
 
 
@@ -56,8 +58,8 @@ public class UsuarioController {
     public ResponseEntity<UsuarioDTO> save(@Valid @RequestBody Usuario usuario){
         try{
             return ResponseEntity.status(HttpStatus.CREATED).body(usuarioMapper.map(usuarioService.save(usuario)));
-        } catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            throw new ErroInternoServidorException(e.getCause().getMessage());
         }
     }
 
@@ -75,7 +77,11 @@ public class UsuarioController {
 
         Optional<Usuario> account = usuarioService.findById(id);
         if (account.isPresent()) {
-            return new ResponseEntity<UsuarioDTO>(usuarioMapper.map(account.get()), HttpStatus.OK);
+            try{
+                return new ResponseEntity<UsuarioDTO>(usuarioMapper.map(account.get()), HttpStatus.OK);
+            } catch (Exception e) {
+                throw new ErroInternoServidorException(e.getCause().getMessage());
+            }
         }else{
             throw new RecursoNaoEncontradoException("Usuário de id "+ id);
         }
@@ -96,7 +102,11 @@ public class UsuarioController {
 
         Optional<Usuario> account = usuarioService.findByLogin(login);
         if (account.isPresent()) {
-            return new ResponseEntity<UsuarioDTO>(usuarioMapper.map(account.get()), HttpStatus.OK);
+            try{
+                return new ResponseEntity<UsuarioDTO>(usuarioMapper.map(account.get()), HttpStatus.OK);
+            } catch (Exception e) {
+                throw new ErroInternoServidorException(e.getCause().getMessage());
+            }
         }else{
             throw new RecursoNaoEncontradoException("Usuário de login "+ login);
         }
@@ -117,7 +127,11 @@ public class UsuarioController {
 
         Optional<Usuario> account = Optional.ofNullable(usuarioService.findByEmail(email));
         if (account.isPresent()) {
-            return new ResponseEntity<UsuarioDTO>(usuarioMapper.map(account.get()), HttpStatus.OK);
+            try{
+                return new ResponseEntity<UsuarioDTO>(usuarioMapper.map(account.get()), HttpStatus.OK);
+            } catch (Exception e) {
+                throw new ErroInternoServidorException(e.getCause().getMessage());
+            }
         }else{
             throw new RecursoNaoEncontradoException("Usuário de email "+ email);
         }
@@ -135,19 +149,20 @@ public class UsuarioController {
     })
     @PutMapping(value = "/{id}", produces = "application/json", consumes = "application/json")
     public ResponseEntity<Usuario> updateUser(@Valid @RequestBody Usuario userAtualizacao, @PathVariable(value = "id") Long id) {
-//        try {
-            Optional<Usuario> user = usuarioService.findById(id);
-            if (user.isPresent()) {
+
+        Optional<Usuario> user = usuarioService.findById(id);
+        if (user.isPresent()) {
+            try {
                 userAtualizacao.setId(user.get().getId());
                 userAtualizacao.setCriadoEm(user.get().getCriadoEm());
                 return new ResponseEntity<Usuario>(usuarioService.save(userAtualizacao), HttpStatus.OK);
-            }else{
-                throw new RecursoNaoEncontradoException("Usuário de id "+ id);
+            } catch (Exception e) {
+                throw new ErroInternoServidorException(e.getCause().getMessage());
             }
-//
-//        } catch (Exception e) {
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
+        }else{
+            throw new RecursoNaoEncontradoException("Usuário de id "+ id);
+        }
+
     }
 
 }

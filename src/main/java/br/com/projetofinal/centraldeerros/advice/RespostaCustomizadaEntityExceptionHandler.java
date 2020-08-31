@@ -1,5 +1,6 @@
 package br.com.projetofinal.centraldeerros.advice;
 
+import br.com.projetofinal.centraldeerros.exceptions.ErroInternoServidorException;
 import br.com.projetofinal.centraldeerros.exceptions.RecursoNaoEncontradoException;
 import br.com.projetofinal.centraldeerros.exceptions.RespostaException;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,17 @@ public class RespostaCustomizadaEntityExceptionHandler extends ResponseEntityExc
                                                                     HttpStatus.NOT_FOUND.getReasonPhrase());
 
         return new ResponseEntity<RespostaException>(exceptionResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ErroInternoServidorException.class)
+    public final ResponseEntity<RespostaException> handleInternalServerErrorException(ErroInternoServidorException ex, WebRequest request) {
+        RespostaException exceptionResponse = new RespostaException(new Date(),
+                ex.getMessage(),
+                request.getDescription(false),
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+
+        return new ResponseEntity<RespostaException>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }
