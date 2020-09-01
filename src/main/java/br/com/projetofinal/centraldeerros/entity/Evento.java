@@ -29,9 +29,8 @@ public class Evento {
     private Long id;
 
     @Column
-    @NotNull
+    @NotNull(message = "Preencha o level do evento.")
     @Enumerated(EnumType.STRING)
-    @NotBlank(message = "Preencha o level do evento.")
     private Level level;
 
     @Column

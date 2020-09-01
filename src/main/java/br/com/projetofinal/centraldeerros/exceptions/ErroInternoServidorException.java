@@ -8,7 +8,7 @@ public class ErroInternoServidorException extends RuntimeException{
 
     public ErroInternoServidorException(String menssagemErro){
 
-        super(menssagemErro + ": Verifique os dados informados, principalmente os dados de login e e-mail que já podem estar sendo utilizados pelo sistema");
+        super(menssagemErro);
 
     }
 

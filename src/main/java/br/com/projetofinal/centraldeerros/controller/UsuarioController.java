@@ -30,6 +30,10 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
+    private final String MENSAGEMERROR = ": Verifique os dados informados, " +
+                                         "principalmente os dados de login e e-mail que " +
+                                         "já podem estar sendo utilizados pelo sistema";
+
 
     @GetMapping("/lista")
     @ApiOperation("Busca todos os Usuários cadastrados")
@@ -43,7 +47,7 @@ public class UsuarioController {
         try{
             return new ResponseEntity(usuarioMapper.map(this.usuarioService.findAll(pageable)), HttpStatus.OK);
         } catch (Exception e) {
-            throw new ErroInternoServidorException(e.getCause().getMessage());
+            throw new ErroInternoServidorException(e.getCause().getMessage() + MENSAGEMERROR);
         }
     }
 
@@ -59,7 +63,7 @@ public class UsuarioController {
         try{
             return ResponseEntity.status(HttpStatus.CREATED).body(usuarioMapper.map(usuarioService.save(usuario)));
         } catch (Exception e) {
-            throw new ErroInternoServidorException(e.getCause().getMessage());
+            throw new ErroInternoServidorException(e.getCause().getMessage() + MENSAGEMERROR);
         }
     }
 
@@ -80,7 +84,7 @@ public class UsuarioController {
             try{
                 return new ResponseEntity<UsuarioDTO>(usuarioMapper.map(account.get()), HttpStatus.OK);
             } catch (Exception e) {
-                throw new ErroInternoServidorException(e.getCause().getMessage());
+                throw new ErroInternoServidorException(e.getCause().getMessage() + MENSAGEMERROR);
             }
         }else{
             throw new RecursoNaoEncontradoException("Usuário de id "+ id);
@@ -105,7 +109,7 @@ public class UsuarioController {
             try{
                 return new ResponseEntity<UsuarioDTO>(usuarioMapper.map(account.get()), HttpStatus.OK);
             } catch (Exception e) {
-                throw new ErroInternoServidorException(e.getCause().getMessage());
+                throw new ErroInternoServidorException(e.getCause().getMessage() + MENSAGEMERROR);
             }
         }else{
             throw new RecursoNaoEncontradoException("Usuário de login "+ login);
@@ -130,7 +134,7 @@ public class UsuarioController {
             try{
                 return new ResponseEntity<UsuarioDTO>(usuarioMapper.map(account.get()), HttpStatus.OK);
             } catch (Exception e) {
-                throw new ErroInternoServidorException(e.getCause().getMessage());
+                throw new ErroInternoServidorException(e.getCause().getMessage() + MENSAGEMERROR);
             }
         }else{
             throw new RecursoNaoEncontradoException("Usuário de email "+ email);
@@ -157,7 +161,7 @@ public class UsuarioController {
                 userAtualizacao.setCriadoEm(user.get().getCriadoEm());
                 return new ResponseEntity<Usuario>(usuarioService.save(userAtualizacao), HttpStatus.OK);
             } catch (Exception e) {
-                throw new ErroInternoServidorException(e.getCause().getMessage());
+                throw new ErroInternoServidorException(e.getCause().getMessage() + MENSAGEMERROR);
             }
         }else{
             throw new RecursoNaoEncontradoException("Usuário de id "+ id);

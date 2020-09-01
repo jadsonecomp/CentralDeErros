@@ -2,6 +2,8 @@ package br.com.projetofinal.centraldeerros.controller;
 
 import br.com.projetofinal.centraldeerros.dto.EventoDTO;
 import br.com.projetofinal.centraldeerros.entity.Evento;
+import br.com.projetofinal.centraldeerros.exceptions.ErroInternoServidorException;
+import br.com.projetofinal.centraldeerros.exceptions.RecursoNaoEncontradoException;
 import br.com.projetofinal.centraldeerros.mappers.EventoMapper;
 import br.com.projetofinal.centraldeerros.rules.DataEventoRule;
 import br.com.projetofinal.centraldeerros.rules.EnumEventoRule;
@@ -33,6 +35,10 @@ public class EventoController {
 
     private EventoMapper eventoMapper = Mappers.getMapper(EventoMapper.class);
 
+    private final String MENSAGEMERROR = ": Verifique os dados informados";
+
+
+
     @GetMapping(produces = "application/json")
     @ApiOperation("Lista todos os eventos cadastrados")
     @ApiResponses(value = {@ApiResponse(code = 200, message= "Eventos listados com sucesso"),
@@ -52,11 +58,16 @@ public class EventoController {
                 .and(new StringEventoRule("descricao", descricao))
                 .and(new LongEventoRule("quantidade", quantidade))
                 .and(new DataEventoRule("data", data));
-        return eventoMapper.map(eventoService.findAll(specifications,pageable));
-
+        try{
+            return eventoMapper.map(eventoService.findAll(specifications,pageable));
+        } catch (Exception e) {
+            throw new RecursoNaoEncontradoException("Evento(s) não localizados");
+        }
     }
 
-    @PostMapping
+
+
+    @PostMapping(produces = "application/json", consumes = "application/json")
     @ApiOperation("Cria um novo evento")
     @ApiResponses(value = {@ApiResponse(code = 201, message= "Evento criado com sucesso"),
                            @ApiResponse(code = 401, message = "Usuário não possui credenciais de autenticação válidas"),
@@ -64,8 +75,14 @@ public class EventoController {
                            @ApiResponse(code = 500, message = "Um erro interno ocorreu, não vai ser possível processar sua requisição")
     })
     public ResponseEntity<Evento> create(@Valid @RequestBody Evento evento){
-        return new ResponseEntity<Evento>(this.eventoService.save(evento), HttpStatus.CREATED);
+        try{
+            return new ResponseEntity<Evento>(this.eventoService.save(evento), HttpStatus.CREATED);
+        } catch (Exception e) {
+            throw new ErroInternoServidorException(e.getCause().getMessage() + MENSAGEMERROR);
+        }
     }
+
+
 
     @PutMapping
     @ApiOperation("Atualiza um evento")
@@ -74,8 +91,14 @@ public class EventoController {
             @ApiResponse(code = 404, message = "Evento não encontrado")
     })
     public ResponseEntity<Evento> update(@Valid @RequestBody Evento evento) {
-        return new ResponseEntity<Evento>(this.eventoService.save(evento), HttpStatus.ACCEPTED);
+        try{
+            return new ResponseEntity<Evento>(this.eventoService.save(evento), HttpStatus.ACCEPTED);
+        } catch (Exception e) {
+            throw new ErroInternoServidorException(e.getCause().getMessage() + MENSAGEMERROR);
+        }
     }
+
+
 
     @ApiOperation("Deleta um evento")
     @ApiResponses(value = {
@@ -88,9 +111,11 @@ public class EventoController {
             this.eventoService.deleteById(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new RecursoNaoEncontradoException("Evento de id "+ id);
         }
     }
+
+
 
     @GetMapping(value= "/{id}", produces = "application/json")
     @ApiOperation("Mostra um evento pelo id")
@@ -102,7 +127,7 @@ public class EventoController {
         try {
             return new ResponseEntity<Evento>(this.eventoService.findById(id).get(), HttpStatus.ACCEPTED);
         } catch (Exception e){
-            return new ResponseEntity<Evento>(HttpStatus.NOT_FOUND);
+            throw new RecursoNaoEncontradoException("Evento de id "+ id);
         }
     }
 
